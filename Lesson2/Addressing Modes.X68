@@ -20,7 +20,7 @@ START:                  ; That is on the Mega Driver head from the Chibi's sourc
 ; #####################
 
 ;TestData
-    lea TestData,a0         ; A0 gains an address: '44'
+    lea TestData,a0         ; A0 gains an address: '7A'
                             ; A0 also gets the values from 'TestData'
                             
     move.l #$00FF00F0,a1    ; Then A1 is now '00FF00F0'.
@@ -33,7 +33,7 @@ FillTestData:
     ; #######
     move.b (a0),d7          ; SINCE I'M NOT USING Chibi's MONITOR, I'M GOING TO USE D7
     ; #######
-    move.b (a0)+,(a1)+      ; A0 increments one, like '++A0', it is now '45',
+    move.b (a0)+,(a1)+      ; A0 increments one, like '++A0', it is now '7B',
                             ; and it adds the value of (a0) into (a1).
     
     dbra d0,FillTestData    ; Get back to the below 'FillTestData' 31 (1F in D0)
