@@ -93,8 +93,6 @@ FillTestData:
 ; Data register direct is where the source is the value held in a Data Register D0-D7
 
     move.l d1,d0            ; RESULT: D0 = $00000001;
-                            ; Although, in the website image is different.
-
 
 ; ####### EXAMPLE 4 - ADDRESS DIRECT #######
 

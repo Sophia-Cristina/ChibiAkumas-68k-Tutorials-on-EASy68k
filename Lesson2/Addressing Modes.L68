@@ -1,12 +1,12 @@
 00000000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 16/07/2021 17:45:17
+Created On: 16/07/2021 17:55:00
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : ChibiAkumas Lesson 2
 00000000                             3  * Written by : ySPHAx
-00000000                             4  * Date       : 
-00000000                             5  * Description:
+00000000                             4  * Date       : 16/07/2021 d/m/y
+00000000                             5  * Description: Lot of ways to mess up with memories.
 00000000                             6  *-----------------------------------------------------------
 00000000                             7      ;ORG    $1000
 00000000                             8      
@@ -24,7 +24,7 @@ Created On: 16/07/2021 17:45:17
 00000000                            20  ; #####################
 00000000                            21  
 00000000                            22  ;TestData
-00000000  41F9 0000007A             23      lea TestData,a0         ; A0 gains an address: '44'
+00000000  41F9 0000007A             23      lea TestData,a0         ; A0 gains an address: '7A'
 00000006                            24                              ; A0 also gets the values from 'TestData'
 00000006                            25                              
 00000006  227C 00FF00F0             26      move.l #$00FF00F0,a1    ; Then A1 is now '00FF00F0'.
@@ -37,7 +37,7 @@ Created On: 16/07/2021 17:45:17
 0000000E                            33      ; #######
 0000000E  1E10                      34      move.b (a0),d7          ; SINCE I'M NOT USING Chibi's MONITOR, I'M GOING TO USE D7
 00000010                            35      ; #######
-00000010  12D8                      36      move.b (a0)+,(a1)+      ; A0 increments one, like '++A0', it is now '45',
+00000010  12D8                      36      move.b (a0)+,(a1)+      ; A0 increments one, like '++A0', it is now '7B',
 00000012                            37                              ; and it adds the value of (a0) into (a1).
 00000012                            38      
 00000012  51C8 FFFA                 39      dbra d0,FillTestData    ; Get back to the below 'FillTestData' 31 (1F in D0)
@@ -97,252 +97,250 @@ Created On: 16/07/2021 17:45:17
 0000002C                            93  ; Data register direct is where the source is the value held in a Data Register D0-D7
 0000002C                            94  
 0000002C  2001                      95      move.l d1,d0            ; RESULT: D0 = $00000001;
-0000002E                            96                              ; Although, in the website image is different.
-0000002E                            97  
+0000002E                            96  
+0000002E                            97  ; ####### EXAMPLE 4 - ADDRESS DIRECT #######
 0000002E                            98  
-0000002E                            99  ; ####### EXAMPLE 4 - ADDRESS DIRECT #######
-0000002E                           100  
-0000002E                           101  ; Address register direct is where the source
-0000002E                           102  ; is the value held in a Address Register A0-A7
-0000002E                           103  
-0000002E  2009                     104      move.l a1,d0            ; RESULT: D0 = $00FF0100;
-00000030                           105                              ; Although, in the website image the result is different,
-00000030                           106                              ; The 'Before' collum, A1 is euqal to '$00FF0100'.
-00000030                           107                              ; In the image of his monitor, '00:00FF0100'.
+0000002E                            99  ; Address register direct is where the source
+0000002E                           100  ; is the value held in a Address Register A0-A7
+0000002E                           101  
+0000002E  2009                     102      move.l a1,d0            ; RESULT: D0 = $00FF0100;
+00000030                           103                              ; Although, in the website image the result is different,
+00000030                           104                              ; The 'Before' collum, A1 is euqal to '$00FF0100'.
+00000030                           105                              ; In the image of his monitor, '00:00FF0100'.
+00000030                           106  
+00000030                           107  ; ####### EXAMPLE 5 - ADDRESS REGISTER INDIRECT ADDRESSING #######
 00000030                           108  
-00000030                           109  ; ####### EXAMPLE 5 - ADDRESS REGISTER INDIRECT ADDRESSING #######
-00000030                           110  
-00000030                           111  ; Address Register indirect looks at the data held at the
-00000030                           112  ; address in the address register...
-00000030                           113  
-00000030                           114  ; ******* We used that in the 'FillTestData' *******
-00000030                           115  ; *** Basically, it is like using a dereferenc from a pointer.
-00000030                           116  ; int a; int* A1 = &a; // suppose &a = '0x00ff0100';
-00000030                           117  
-00000030  3011                     118      move.w (a1),d0          ; RESULT: '$00FFF0F1'
-00000032                           119                              ; Same change from 'EXAMPLE 2', big endian value inside
-00000032                           120                              ; what is addressed by A1.
+00000030                           109  ; Address Register indirect looks at the data held at the
+00000030                           110  ; address in the address register...
+00000030                           111  
+00000030                           112  ; ******* We used that in the 'FillTestData' *******
+00000030                           113  ; *** Basically, it is like using a dereferenc from a pointer.
+00000030                           114  ; int a; int* A1 = &a; // suppose &a = '0x00ff0100';
+00000030                           115  
+00000030  3011                     116      move.w (a1),d0          ; RESULT: '$00FFF0F1'
+00000032                           117                              ; Same change from 'EXAMPLE 2', big endian value inside
+00000032                           118                              ; what is addressed by A1.
+00000032                           119  
+00000032                           120  ; ####### EXAMPLE 6 - ADDRESS REGISTER INDIRECT WITH POST-INCREMENT #######
 00000032                           121  
-00000032                           122  ; ####### EXAMPLE 6 - ADDRESS REGISTER INDIRECT WITH POST-INCREMENT #######
-00000032                           123  
-00000032                           124  ; In the video he talks that the increment is based on "b, w, l",
-00000032                           125  ; so keep that in mind, for example, '.b (An)+' will change as '++An',
-00000032                           126  ; but '.w (An)+' will change as 'An += sizeof(w); // An += 2'.
-00000032                           127  
+00000032                           122  ; In the video he talks that the increment is based on "b, w, l",
+00000032                           123  ; so keep that in mind, for example, '.b (An)+' will change as '++An',
+00000032                           124  ; but '.w (An)+' will change as 'An += sizeof(w); // An += 2'.
+00000032                           125  
+00000032                           126  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+00000032                           127  ; When used with SP/A7 This is effectively the 68000 POP command.
 00000032                           128  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-00000032                           129  ; When used with SP/A7 This is effectively the 68000 POP command.
-00000032                           130  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-00000032                           131  
-00000032  2019                     132      move.l (a1)+,d0         ; RESULT: '$F0F1F2F3'
-00000034                           133      
-00000034  2E09                     134      move.l a1,d7            ; RESULT: '$00FF0104' ---> An += 4 // An += sizeof(l)
-00000036                           135                              ; That is not in the video or tutorial, but
-00000036                           136                              ; D7 is my monitor, hehehe...
-00000036                           137                              
-00000036                           138  ; ******* NOTE: In the website he uses '.w', but i used '.l', so
-00000036                           139  ;               in the tutorial he gets only '$0000F0F1', while in
-00000036                           140  ;               my version it is '$F0F1F2F3'. *******
-00000036                           141  
-00000036                           142  ; ###############################################################
-00000036                           143  ; Because A7 is the stack pointer it works differently to other
-00000036                           144  ; Address registers - if we write 1 byte to A7 with Postincrement,
-00000036                           145  ; it will actually move 2... This is because it needs to stay byte
-00000036                           146  ; aligned to work with Words and Longs.
-00000036                           147  ; ###############################################################
-00000036                           148                              
-00000036                           149  ; ####### EXAMPLE 7 - ADDRESS REGISTER WITH PRE-DECRIMENT #######
-00000036                           150  
-00000036                           151  ; Pretty alike 'EXAMPLE 6', but with decrement.
-00000036                           152  ; Also, i'll add his A7 example in the video:
-00000036                           153  ; https://youtu.be/SmrOPJbpnDw?t=764
-00000036                           154  
-00000036                           155  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-00000036                           156  ; When used with a WRITING command and SP/A7 This is effectively
-00000036                           157  ; the 68000 PUSH command.
-00000036                           158  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-00000036                           159  
-00000036  2021                     160      move.l -(a1),d0         ; RESULT: '$F0F1F2F3'
-00000038                           161      
-00000038  2E09                     162      move.l a1,d7            ; RESULT: '$00FF0100' ---> An -= 4 // An -= sizeof(l)
-0000003A                           163                              ; That is not in the video or tutorial, but
-0000003A                           164                              ; D7 is my monitor, hehehe...
-0000003A                           165  
-0000003A                           166  ; #######
-0000003A                           167  ; CODES HERE ARE ON THE VIDEO:
-0000003A  247C 00FF0200            168      move.l #UserRAM+$200,a2
-00000040  2E7C 00FF0300            169      move.l #UserRAM+$300,a7
-00000046  1022                     170      move.b -(a2),d0         ; RESULT: '$00FF01FF'
-00000048                           171                              ; A2 will be decreased by 1 byte
-00000048                           172                              ; |___> An -= 1 // An -= sizeof(char)
-00000048  1027                     173      move.b -(a7),d0         ; RESULT: '$00FF02FE'
-0000004A                           174                              ; A7 will be decremented by TWO BYTES - A7 is special
-0000004A  264F                     175      move.l a7,a3            ; RESULT: 'A3 = A7 = $00FF02FE'
-0000004C                           176  ; #######
+00000032                           129  
+00000032  2019                     130      move.l (a1)+,d0         ; RESULT: '$F0F1F2F3'
+00000034                           131      
+00000034  2E09                     132      move.l a1,d7            ; RESULT: '$00FF0104' ---> An += 4 // An += sizeof(l)
+00000036                           133                              ; That is not in the video or tutorial, but
+00000036                           134                              ; D7 is my monitor, hehehe...
+00000036                           135                              
+00000036                           136  ; ******* NOTE: In the website he uses '.w', but i used '.l', so
+00000036                           137  ;               in the tutorial he gets only '$0000F0F1', while in
+00000036                           138  ;               my version it is '$F0F1F2F3'. *******
+00000036                           139  
+00000036                           140  ; ###############################################################
+00000036                           141  ; Because A7 is the stack pointer it works differently to other
+00000036                           142  ; Address registers - if we write 1 byte to A7 with Postincrement,
+00000036                           143  ; it will actually move 2... This is because it needs to stay byte
+00000036                           144  ; aligned to work with Words and Longs.
+00000036                           145  ; ###############################################################
+00000036                           146                              
+00000036                           147  ; ####### EXAMPLE 7 - ADDRESS REGISTER WITH PRE-DECRIMENT #######
+00000036                           148  
+00000036                           149  ; Pretty alike 'EXAMPLE 6', but with decrement.
+00000036                           150  ; Also, i'll add his A7 example in the video:
+00000036                           151  ; https://youtu.be/SmrOPJbpnDw?t=764
+00000036                           152  
+00000036                           153  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+00000036                           154  ; When used with a WRITING command and SP/A7 This is effectively
+00000036                           155  ; the 68000 PUSH command.
+00000036                           156  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+00000036                           157  
+00000036  2021                     158      move.l -(a1),d0         ; RESULT: '$F0F1F2F3'
+00000038                           159      
+00000038  2E09                     160      move.l a1,d7            ; RESULT: '$00FF0100' ---> An -= 4 // An -= sizeof(l)
+0000003A                           161                              ; That is not in the video or tutorial, but
+0000003A                           162                              ; D7 is my monitor, hehehe...
+0000003A                           163  
+0000003A                           164  ; #######
+0000003A                           165  ; CODES HERE ARE ON THE VIDEO:
+0000003A  247C 00FF0200            166      move.l #UserRAM+$200,a2
+00000040  2E7C 00FF0300            167      move.l #UserRAM+$300,a7
+00000046  1022                     168      move.b -(a2),d0         ; RESULT: '$00FF01FF'
+00000048                           169                              ; A2 will be decreased by 1 byte
+00000048                           170                              ; |___> An -= 1 // An -= sizeof(char)
+00000048  1027                     171      move.b -(a7),d0         ; RESULT: '$00FF02FE'
+0000004A                           172                              ; A7 will be decremented by TWO BYTES - A7 is special
+0000004A  264F                     173      move.l a7,a3            ; RESULT: 'A3 = A7 = $00FF02FE'
+0000004C                           174  ; #######
+0000004C                           175  
+0000004C                           176  ; ####### EXAMPLE 8 - ADDRESS REGISTER INDIRECT, WITH 16-BIT DISPLACEMENT #######
 0000004C                           177  
-0000004C                           178  ; ####### EXAMPLE 8 - ADDRESS REGISTER INDIRECT, WITH 16-BIT DISPLACEMENT #######
-0000004C                           179  
-0000004C                           180  ; This is another inderect addressing mode, however with a 'fixed' displacement
-0000004C                           181  ; - the data is read from the Address register plus the offset - however the
-0000004C                           182  ; address register is unchanged.
-0000004C                           183  
-0000004C                           184  ; This is similar to (IY+n) on the Z80... It can also be used for reading values
-0000004C                           185  ; pushed onto the stack.
-0000004C                           186  
-0000004C  1029 0002                187      move.b (2,A1),d0        ; RESULT: '$F0F1F2F2'
-00000050                           188                              ; A1 maintains equal to '$00FF0100'
-00000050                           189  
-00000050                           190  ; In this example a byte was read from A1+2.... Note A1 was unchanged...
-00000050                           191  ; The displacement does not have to be positive - it can also be negative.
-00000050                           192  
-00000050                           193  ; *******
-00000050                           194  ; NOTE:
-00000050                           195  ; * From the table in his website, there is codes that changed format,
-00000050                           196  ; below it is written like this:
-00000050                           197  ;   |Address register indirect, with 16-bit displacement|
-00000050                           198  ;   |-------> NEW: (dd,An) | EX.: (5,A0) | OLD: d(An) <-------|
-00000050                           199  ;   |Read a value from the address in A0, shifted by fixed value d|
-00000050                           200  ; *******
+0000004C                           178  ; This is another inderect addressing mode, however with a 'fixed' displacement
+0000004C                           179  ; - the data is read from the Address register plus the offset - however the
+0000004C                           180  ; address register is unchanged.
+0000004C                           181  
+0000004C                           182  ; This is similar to (IY+n) on the Z80... It can also be used for reading values
+0000004C                           183  ; pushed onto the stack.
+0000004C                           184  
+0000004C  1029 0002                185      move.b (2,A1),d0        ; RESULT: '$F0F1F2F2'
+00000050                           186                              ; A1 maintains equal to '$00FF0100'
+00000050                           187  
+00000050                           188  ; In this example a byte was read from A1+2.... Note A1 was unchanged...
+00000050                           189  ; The displacement does not have to be positive - it can also be negative.
+00000050                           190  
+00000050                           191  ; *******
+00000050                           192  ; NOTE:
+00000050                           193  ; * From the table in his website, there is codes that changed format,
+00000050                           194  ; below it is written like this:
+00000050                           195  ;   |Address register indirect, with 16-bit displacement|
+00000050                           196  ;   |-------> NEW: (dd,An) | EX.: (5,A0) | OLD: d(An) <-------|
+00000050                           197  ;   |Read a value from the address in A0, shifted by fixed value d|
+00000050                           198  ; *******
+00000050                           199  
+00000050                           200  ; ####### EXAMPLE 9 - ADDRESS REGISTER INDIRECT WITH INDEXING AND 8-BIT DISPLACEMENT #######
 00000050                           201  
-00000050                           202  ; ####### EXAMPLE 9 - ADDRESS REGISTER INDIRECT WITH INDEXING AND 8-BIT DISPLACEMENT #######
-00000050                           203  
-00000050                           204  ; This is the most advanced addressing mode available... the address
-00000050                           205  ; in the Address register is used PLUS the Data register PLUS a fixed
-00000050                           206  ; offset ... The value is read from the resulting address...
-00000050                           207  
-00000050                           208  ; If you want to do a command like  (A0,D0) then use this mode with a
-00000050                           209  ; ZERO displacement - eg (0,A0,D0).
-00000050                           210  
-00000050                           211  ; In this example D1=1 and our displacement is 2... The result is we're
-00000050                           212  ; reading in from A1+3:
-00000050                           213  
-00000050  4280                     214      clr.l d0                ; So the result is the same of his website...
-00000052  1031 1002                215      move.b (2,a1,d1),d0     ; RESULT: '$000000F3'
-00000056                           216                              ; IMAGE:
-00000056                           217                              ; $00FF0100 |        F0
-00000056                           218                              ; $00FF0101 v + 2    F1
-00000056                           219                              ; $00FF0102 v + D1   F2
-00000056                           220                              ; $00FF0103 *        F3 <--- RESULT!
-00000056                           221                              ; // int n = 2; a1 += n + d1; // a1 += 3;
-00000056  4287                     222      clr.l d7
-00000058  1E31 0000                223      move.b (0,a1,d0),d7     ; RESULT: '$000000FF'
+00000050                           202  ; This is the most advanced addressing mode available... the address
+00000050                           203  ; in the Address register is used PLUS the Data register PLUS a fixed
+00000050                           204  ; offset ... The value is read from the resulting address...
+00000050                           205  
+00000050                           206  ; If you want to do a command like  (A0,D0) then use this mode with a
+00000050                           207  ; ZERO displacement - eg (0,A0,D0).
+00000050                           208  
+00000050                           209  ; In this example D1=1 and our displacement is 2... The result is we're
+00000050                           210  ; reading in from A1+3:
+00000050                           211  
+00000050  4280                     212      clr.l d0                ; So the result is the same of his website...
+00000052  1031 1002                213      move.b (2,a1,d1),d0     ; RESULT: '$000000F3'
+00000056                           214                              ; IMAGE:
+00000056                           215                              ; $00FF0100 |        F0
+00000056                           216                              ; $00FF0101 v + 2    F1
+00000056                           217                              ; $00FF0102 v + D1   F2
+00000056                           218                              ; $00FF0103 *        F3 <--- RESULT!
+00000056                           219                              ; // int n = 2; a1 += n + d1; // a1 += 3;
+00000056  4287                     220      clr.l d7
+00000058  1E31 0000                221      move.b (0,a1,d0),d7     ; RESULT: '$000000FF'
+0000005C                           222  
+0000005C                           223  ; As before A1, and D1 are unchanged by this command.
 0000005C                           224  
-0000005C                           225  ; As before A1, and D1 are unchanged by this command.
-0000005C                           226  
-0000005C                           227  ; ###############################################################
-0000005C                           228  ; When we specify MOVE (2,A1,D1),D0 then D1 will be treated as a
-0000005C                           229  ; WORD register... So if D1=$00010001 it will actually be treated
-0000005C                           230  ; as $0001.
-0000005C                           231  ; If we want to use the full Long, we need to specify the whole of
-0000005C                           232  ; D0 we need to specif MOVE (2,A1,D1.L),D0;
-0000005C                           233  ; ###############################################################
+0000005C                           225  ; ###############################################################
+0000005C                           226  ; When we specify MOVE (2,A1,D1),D0 then D1 will be treated as a
+0000005C                           227  ; WORD register... So if D1=$00010001 it will actually be treated
+0000005C                           228  ; as $0001.
+0000005C                           229  ; If we want to use the full Long, we need to specify the whole of
+0000005C                           230  ; D0 we need to specif MOVE (2,A1,D1.L),D0;
+0000005C                           231  ; ###############################################################
+0000005C                           232  
+0000005C                           233  ; ####### EXAMPLE 10 - PROGRAM COUNTER RELATIVE ADDRESSING WITH A 16-BIT OFFSET #######
 0000005C                           234  
-0000005C                           235  ; ####### EXAMPLE 10 - PROGRAM COUNTER RELATIVE ADDRESSING WITH A 16-BIT OFFSET #######
-0000005C                           236  
-0000005C                           237  ; The 'Program Counter' is the current position in the program...
-0000005C                           238  ; This addressing mode allows for data to be read from and address
-0000005C                           239  ; relative to the program counter... This is useful for 'relocatable code'...
-0000005C                           240  ; Where you don't know where your program will actually end up running...
-0000005C                           241  
-0000005C                           242  ; That said, it's possible you will never need this addressing mode, so don't
-0000005C                           243  ; worry about it if you don't understand it!
-0000005C                           244  
+0000005C                           235  ; The 'Program Counter' is the current position in the program...
+0000005C                           236  ; This addressing mode allows for data to be read from and address
+0000005C                           237  ; relative to the program counter... This is useful for 'relocatable code'...
+0000005C                           238  ; Where you don't know where your program will actually end up running...
+0000005C                           239  
+0000005C                           240  ; That said, it's possible you will never need this addressing mode, so don't
+0000005C                           241  ; worry about it if you don't understand it!
+0000005C                           242  
+0000005C                           243  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+0000005C                           244  ; Note: This command can only be used for READING
 0000005C                           245  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-0000005C                           246  ; Note: This command can only be used for READING
-0000005C                           247  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-0000005C                           248  
-0000005C  303A FFA4                249      move.w (2,pc),d0         ; RESULT: '$00000000'
-00000060                           250                               ; IMAGE:
-00000060                           251                               ; PC     |          ??
-00000060                           252                               ; PC     |  + 1     ??
-00000060                           253                               ; PC     v  + 2     68
-00000060                           254                               ; PC * Big Endian   69
-00000060                           255                               ; ---> RESULT: 'D0 = $'
-00000060                           256  
-00000060                           257  ; In this example we're going to load bytes $68 and $69 into registers
-00000060                           258  ; D0 and D1...
-00000060                           259  ; For D0 we're going to specify the offset as a number...
-00000060                           260  
-00000060  303A 0038                261      move.w (PCTestData,pc),d0   ; RESULT: '$00006869'
-00000064                           262      
-00000064                           263  ; For D1 we'll use the more reliable option of using a label.
-00000064                           264  
-00000064  323A FFA2                265      move.w (8,pc),d1             ; RESULT: '$000000FF'
-00000068                           266  
-00000068                           267  ; ###############################################################
-00000068                           268  ; It's important to bear in mind that our assembler may well be
-00000068                           269  ; doing optimizations of our code, and we cannot predict how many
-00000068                           270  ; bytes each command will take, therefore it's better to use a
-00000068                           271  ; label to specify the offset in real word code than the (8,pc)
-00000068                           272  ; we used here in this example.
-00000068                           273  ; ###############################################################
-00000068                           274  
-00000068                           275  ; #######
-00000068                           276  ;   EXAMPLE 11 - PROGRAM COUNTER RELATIVE ADDRESSING
-00000068                           277  ;   WITH AN 8-BIT OFFSET PLUS AN INDEX REGISTER
-00000068                           278  ; #######
-00000068                           279  
-00000068                           280  ; This 'Program Counter' Relative addressing mode is similar,
-00000068                           281  ; however it also allows for a Data register to be added to the
-00000068                           282  ; offset and the result read from the final address... The Address
-00000068                           283  ; and Data register are unchanged.
-00000068                           284  
+0000005C                           246  
+0000005C  303A FFA4                247      move.w (2,pc),d0         ; RESULT: '$00000000'
+00000060                           248                               ; IMAGE:
+00000060                           249                               ; PC     |          ??
+00000060                           250                               ; PC     |  + 1     ??
+00000060                           251                               ; PC     v  + 2     68
+00000060                           252                               ; PC * Big Endian   69
+00000060                           253                               ; ---> RESULT: 'D0 = $'
+00000060                           254  
+00000060                           255  ; In this example we're going to load bytes $68 and $69 into registers
+00000060                           256  ; D0 and D1...
+00000060                           257  ; For D0 we're going to specify the offset as a number...
+00000060                           258  
+00000060  303A 0038                259      move.w (PCTestData,pc),d0   ; RESULT: '$00006869'
+00000064                           260      
+00000064                           261  ; For D1 we'll use the more reliable option of using a label.
+00000064                           262  
+00000064  323A FFA2                263      move.w (8,pc),d1             ; RESULT: '$000000FF'
+00000068                           264  
+00000068                           265  ; ###############################################################
+00000068                           266  ; It's important to bear in mind that our assembler may well be
+00000068                           267  ; doing optimizations of our code, and we cannot predict how many
+00000068                           268  ; bytes each command will take, therefore it's better to use a
+00000068                           269  ; label to specify the offset in real word code than the (8,pc)
+00000068                           270  ; we used here in this example.
+00000068                           271  ; ###############################################################
+00000068                           272  
+00000068                           273  ; #######
+00000068                           274  ;   EXAMPLE 11 - PROGRAM COUNTER RELATIVE ADDRESSING
+00000068                           275  ;   WITH AN 8-BIT OFFSET PLUS AN INDEX REGISTER
+00000068                           276  ; #######
+00000068                           277  
+00000068                           278  ; This 'Program Counter' Relative addressing mode is similar,
+00000068                           279  ; however it also allows for a Data register to be added to the
+00000068                           280  ; offset and the result read from the final address... The Address
+00000068                           281  ; and Data register are unchanged.
+00000068                           282  
+00000068                           283  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+00000068                           284  ; Note: This command can only be used for READING
 00000068                           285  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-00000068                           286  ; Note: This command can only be used for READING
-00000068                           287  ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-00000068                           288  
-00000068                           289  ; In this example we're going to load a byte from the 'Test Data'
-00000068                           290  ; adding the D1 register as an offset (D1=1).
-00000068                           291  
-00000068  7201                     292      move.l #1,d1                 ; D1 = 1;
-0000006A  103B 10FE                293      move.b (2,pc,d1),d0          ; RESULT: '$0000683B'
-0000006E                           294                                   ; Result in the website is '$00006869'
-0000006E                           295                                   ; and '$00000069'.
+00000068                           286  
+00000068                           287  ; In this example we're going to load a byte from the 'Test Data'
+00000068                           288  ; adding the D1 register as an offset (D1=1).
+00000068                           289  
+00000068  7201                     290      move.l #1,d1                 ; D1 = 1;
+0000006A  103B 10FE                291      move.b (2,pc,d1),d0          ; RESULT: '$0000683B'
+0000006E                           292                                   ; Result in the website is '$00006869'
+0000006E                           293                                   ; and '$00000069'.
+0000006E                           294  
+0000006E                           295  ; The first time we'll do this using a label...
 0000006E                           296  
-0000006E                           297  ; The first time we'll do this using a label...
-0000006E                           298  
-0000006E  103B 10FE                299      move.b (PCTestData,pc,d1),d0 ; RESULT: '$0000683B'
-00000072                           300  
-00000072                           301  ; The second using a numerical value...
-00000072                           302  ; Either way the result is the same.
-00000072                           303  ; In the example we'll read a byte from the 'Test Data' - offset by
-00000072                           304  ; D1 (1)... The result is we'll load in byte $69 into D0 and D2.
-00000072                           305  
-00000072  143B 10FE                306      move.b (8,pc,d1),d2          ; RESULT: '$0000003B'
-00000076                           307  
-00000076                           308  ; ###############################################################
-00000076                           309  ; The PC relative modes are something you can do without - they
-00000076                           310  ; were never used in Grime 68000.
-00000076                           311  
-00000076                           312  ; But you need to know about them as they're pretty powerful!
-00000076                           313  ; They save space, and allow for relocatable code... It's also
-00000076                           314  ; important to understand there are MORE addressing modes on the
-00000076                           315  ; later processors... But we're only covering the 68000 in these
-00000076                           316  ; tutorials.
+0000006E  103B 10FE                297      move.b (PCTestData,pc,d1),d0 ; RESULT: '$0000683B'
+00000072                           298  
+00000072                           299  ; The second using a numerical value...
+00000072                           300  ; Either way the result is the same.
+00000072                           301  ; In the example we'll read a byte from the 'Test Data' - offset by
+00000072                           302  ; D1 (1)... The result is we'll load in byte $69 into D0 and D2.
+00000072                           303  
+00000072  143B 10FE                304      move.b (8,pc,d1),d2          ; RESULT: '$0000003B'
+00000076                           305  
+00000076                           306  ; ###############################################################
+00000076                           307  ; The PC relative modes are something you can do without - they
+00000076                           308  ; were never used in Grime 68000.
+00000076                           309  
+00000076                           310  ; But you need to know about them as they're pretty powerful!
+00000076                           311  ; They save space, and allow for relocatable code... It's also
+00000076                           312  ; important to understand there are MORE addressing modes on the
+00000076                           313  ; later processors... But we're only covering the 68000 in these
+00000076                           314  ; tutorials.
+00000076                           315  ; ###############################################################
+00000076                           316  
 00000076                           317  ; ###############################################################
-00000076                           318  
+00000076                           318  ; ###############################################################
 00000076                           319  ; ###############################################################
-00000076                           320  ; ###############################################################
-00000076                           321  ; ###############################################################
-00000076                           322  
-00000076  FFFF FFFF                323      SIMHALT             ; halt simulator
+00000076                           320  
+00000076  FFFF FFFF                321      SIMHALT             ; halt simulator
+0000007A                           322  
+0000007A                           323  ; ###############################################################
 0000007A                           324  
-0000007A                           325  ; ###############################################################
-0000007A                           326  
+0000007A                           325  ; #####################
+0000007A                           326  ; ####### VARIABLES AND CONSTANTS
 0000007A                           327  ; #####################
-0000007A                           328  ; ####### VARIABLES AND CONSTANTS
-0000007A                           329  ; #####################
-0000007A                           330  
-0000007A                           331  TestData:
-0000007A= 00 01 02 03 04 05 ...    332      dc.b $00,$01,$02,$03,$04,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E,$0F
-0000008A= F0 F1 F2 F3 F4 F5 ...    333      dc.b $F0,$F1,$F2,$F3,$F4,$F5,$F6,$F7,$F8,$F9,$FA,$FB,$FC,$FD,$FE,$FF
-0000009A                           334  
-0000009A                           335  PCTestData:
-0000009A= 68 69 70                 336      dc.b $68,$69,$70
+0000007A                           328  
+0000007A                           329  TestData:
+0000007A= 00 01 02 03 04 05 ...    330      dc.b $00,$01,$02,$03,$04,$05,$06,$07,$08,$09,$0A,$0B,$0C,$0D,$0E,$0F
+0000008A= F0 F1 F2 F3 F4 F5 ...    331      dc.b $F0,$F1,$F2,$F3,$F4,$F5,$F6,$F7,$F8,$F9,$FA,$FB,$FC,$FD,$FE,$FF
+0000009A                           332  
+0000009A                           333  PCTestData:
+0000009A= 68 69 70                 334      dc.b $68,$69,$70
+0000009D                           335  
+0000009D                           336  ; ###############################################################
 0000009D                           337  
 0000009D                           338  ; ###############################################################
-0000009D                           339  
-0000009D                           340  ; ###############################################################
-0000009D                           341      END    START        ; !!!!!!! last line of source !!!!!!!
+0000009D                           339      END    START        ; !!!!!!! last line of source !!!!!!!
 
 No errors detected
 No warnings generated
