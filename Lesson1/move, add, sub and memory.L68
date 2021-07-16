@@ -1,0 +1,206 @@
+00000000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 15/07/2021 12:15:30
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : ChibiAkumas 68k tutorial
+00000000                             3  * Written by : ySPHAx
+00000000                             4  * Date       : 15/07/2021
+00000000                             5  * Description: Learning 68k assembly with ChibiAkumas tuto.
+00000000                             6  *              https://www.chibiakumas.com/68000/
+00000000                             7  *-----------------------------------------------------------
+00000000                             8  
+00000000                             9      ;ORG    $1000 ; Looking in the emulator, it looks like it begins at
+00000000                            10                   ; address number 1000.
+00000000                            11      
+00000000                            12  ; things which start with '#' are number, or else, is memory address
+00000000                            13  ; If you add '%' after, it is binary number: #%00001111
+00000000                            14  ; If you add '$' after, it is Hex number: #$4000
+00000000                            15  
+00000000                            16  ; b = byte (8), w = word (16) and l = long (32)
+00000000                            17  ; move.l = move LONG
+00000000                            18  
+00000000                            19  ; JSR jumps to a subroutine; is the equivalent of GOSUB in basic or CALL in z80
+00000000                            20  
+00000000                            21  ; ###############################################################
+00000000                            22  ; ###############################################################
+00000000                            23  ; ###############################################################
+00000000                            24  
+00000000                            25  START:                     ; first instruction of program
+00000000                            26  * Put program code here
+00000000                            27  
+00000000                            28  ; #####################
+00000000                            29  ; ####### MOVE COMMANDS
+00000000                            30  ; #####################
+00000000                            31  
+00000000  7070                      32      move.l #$70,d0         ; Load D0 with HEX ($) as LONG (32 bits)
+00000002  7246                      33      move.l #70,d1          ; Load D1 with DECIMAL (45 in hex) as LONG (32 bits)
+00000004                            34  ;    jmp * ; 'jmp *' tricks 68k to infinite loop, maybe akin to 'while(1)'
+00000004                            35  
+00000004                            36  ; Check image to understand the text below:
+00000004                            37  ; * You can clean with 'move.l #0,d0' and then 'move.l d0,d1' *
+00000004                            38  
+00000004                            39  ;When we didn't specify any length with D3 - the assembler assumed we were
+00000004                            40  ;working at 16 bits... however I'd reccomend for clarity that you always
+00000004                            41  ;specify B W or L for your own clarity... NOTE: Some commands ALWAYS work
+00000004                            42  ;as L or B commands - like LEA or SBCD... so do not assume anything!
+00000004                            43  
+00000004                            44  ; ###############################################################
+00000004                            45  
+00000004                            46  ;VERY IMPORTANT!
+00000004                            47  ;When you copy a B or W from one register to another - the remaining bits will
+00000004                            48  ;be unchanged! this can cause problems... for example if you do
+00000004                            49  ;    Move.B #0,D1
+00000004                            50  ;    Add.L D0,D1
+00000004                            51  ;You will not be able to rely on the value of D1.... why? because the top 24
+00000004                            52  ;bits of D0 could have been ANYTHING.... and you just added them to D1! -
+00000004                            53  ;either you should have done Add.B - or Cleared the top bits of D0
+00000004                            54  
+00000004                            55  ;NOTE: There is no 24bit command - even though all our addresses are 24 bit
+00000004                            56  ;- so we need to use Long commands (32 bit) for address registers!
+00000004                            57  
+00000004                            58  ; ###############################################################
+00000004                            59  
+00000004                            60  ;There is one similar command we may want to use... CLR.L D0...
+00000004                            61  ;This clears (sets to 0) a register, and works with B, W or L...
+00000004                            62  ;VASM will NOT automatically convert MOVE.L #0,D0 to CLR.L D0...
+00000004                            63  ;It converts to MoveQ #0,D0 because MoveQ is faster.
+00000004                            64  
+00000004  4281                      65      clr.l d1                ; Set d1 to 0
+00000006                            66  
+00000006                            67  ; ###############################################################
+00000006                            68  
+00000006                            69  ;setting an address we really should use MoveA... this is because the Move
+00000006                            70  ;command cannot set an Address register...
+00000006                            71  ;if we do Move.L $00111111,A0 it WILL work... even though it shouldn't!
+00000006                            72  ;Why? because VASM is kind - it knows we should have used MoveA - so it
+00000006                            73  ;converts it for us.
+00000006                            74  
+00000006  207C 70707070             75      moveA.l #$70707070,a0   ; Load A0 with Hex 70707070
+0000000C                            76  
+0000000C                            77  ; ###############################################################
+0000000C                            78  
+0000000C                            79  ;another is MoveQ.L - which only works with L (32 bit) this will set a
+0000000C                            80  ;register to a value between -127 and 128... why use it? well it's FAST!
+0000000C                            81  ;MoveQ will compile to 2 bytes  where as Move.L would take 6...
+0000000C                            82  ;BUT VASM is kind again! it will detect if you could have used the
+0000000C                            83  ;MoveQ.L command - and convert your code to it automatically...
+0000000C                            84  
+0000000C  7201                      85      moveQ.l #$01,d1 ; Move Quick Long -128 to 127
+0000000E                            86  
+0000000E                            87  ; ###############################################################
+0000000E                            88  
+0000000E                            89  ; #####################
+0000000E                            90  ; ####### ADD AND SUB
+0000000E                            91  ; #####################
+0000000E  4280                      92      clr.l d0        ; In the tuto, looks like he remade the code,
+00000010                            93                      ; i'm just going to clean it.
+00000010  7015                      94      move.l #$15,d0  ; So he register 15 in HEX to d0
+00000012  5680                      95      add.l #3,d0     ; Add 3 (decimal) to d0
+00000014  5780                      96      sub.l #3,d0     ; Sub 3 (decimal) to d0, make sure to check
+00000016                            97                      ; by line on the simulator, or else, it wont
+00000016                            98                      ; even look like something happened.
+00000016                            99                      
+00000016                           100  ; We aren't using VASM (i think, i don't know the compiler of
+00000016                           101  ;'EASy68k'), so, check if it will work correctly.
+00000016                           102  
+00000016                           103  ;Like with Move, there are some 'Special versions' we should use...
+00000016                           104  ;Like AddI and SubI with a # number (immediate number) or
+00000016                           105  ;AddA / SubA for addreses - but once again VASM will worry about
+00000016                           106  ;that for us!
+00000016                           107  
+00000016  5280                     108      addI.l #1,d0    ; Technically, we should use AddI with '#'
+00000018  5380                     109      subI.l #1,d0    ; Technically, we should use SubI with '#'
+0000001A                           110  
+0000001A                           111  ;One more interesting one is ADDQ and SUBQ... These allow the
+0000001A                           112  ;addition or subtraction of a value up to 8... If you're familiar
+0000001A                           113  ;with Z80 - these are effectively our inc and dec commands -
+0000001A                           114  ;they're super fast, and compile to 2 bytes (the minimum for the
+0000001A                           115  ;68000) - and we can inc or dec by up to 7 in one go!...
+0000001A                           116  ;These work with Data Registers, and Address Registers...
+0000001A                           117  ;That said - the Assembler wil work out when we could have used
+0000001A                           118  ;them if we don't!
+0000001A                           119  
+0000001A  5E80                     120      addQ.l #7,d0    ; 0 to 7, only faster
+0000001C  5F80                     121      subQ.l #7,d0
+0000001E                           122      
+0000001E                           123  ; ###############################################################
+0000001E                           124  
+0000001E                           125  ; #####################
+0000001E                           126  ; ####### STORE BACK TO MEMORY
+0000001E                           127  ; #####################
+0000001E                           128  
+0000001E                           129  ;The 68000 is a bit different to the 8 bits... usually there will
+0000001E                           130  ;be an 'Operating system' doing memory management for us,  and
+0000001E                           131  ;this may mean we don't know where our program ends up running,
+0000001E                           132  ;or what RAM we've been given for out variables...
+0000001E                           133  
+0000001E                           134  ;Fortunately there is a simple solution... the LEA command will
+0000001E                           135  ;Load the Effective Address of a 'label' - the result... we don't
+0000001E                           136  ;need to worry about where the data really is!...
+0000001E                           137  
+0000001E                           138  ;Labels always appear at the far left of the code - and mark a
+0000001E                           139  ;'defined line' of the code... But don't worry too much about
+0000001E                           140  ;'Labels' yet - we'll cover them in a later lesson.
+0000001E                           141  
+0000001E                           142  ;In this example 'UserRam' is a 'label' pointing to some RAM we
+0000001E                           143  ;want to use - and store some data into that ram...
+0000001E                           144  
+0000001E                           145  ;Note in this example we're working at the Byte level.
+0000001E                           146  
+0000001E                           147  UserRAM
+0000001E                           148  
+0000001E  41F8 0082                149      lea UserRAM+100,a0  ; Show memory; I think this was for his monitor
+00000022                           150                          ; Since it does t he same as the code below the
+00000022                           151                          ; move below.
+00000022  7001                     152      moveq.l #1,d0
+00000024                           153      
+00000024  41F8 0082                154      LEA UserRAM+100,a0  ; Load 3 bytes into A0, A1, and A2
+00000028  43F8 0083                155      LEA UserRAM+101,a1
+0000002C  45F8 0084                156      LEA UserRAM+102,a2
+00000030                           157  
+00000030  103C 0011                158      move.b #$11,d0
+00000034  1080                     159      move.b d0,(a0)      ; Save D0 to address in A0
+00000036  12BC 0022                160      move.b #$22,(a1)    ; Save $22 directly to address in A1
+0000003A                           161      
+0000003A  143C 0033                162      move.b #$33,d2      ; Load $33 into D2
+0000003E  D410                     163      add.b (a0),d2       ; add value from address in A0
+00000040  D411                     164      add.b (a1),d2       ; add value from address in A1
+00000042  1482                     165      move.b d2,(a2)      ; Save A2 to address in A2; maybe he wanted to say 'Save D2'
+00000044                           166      
+00000044  41F8 0082                167      lea UserRAM+100,a0  ; Show memory after all those commands
+00000048  7001                     168      moveq.l #1,d0
+0000004A                           169      
+0000004A                           170  ; * As i noticed (not in the tuto), the address don't change the number in
+0000004A                           171  ; the simulator, it just change the value at the address.
+0000004A                           172  ; To test it better, i'll move the UserRAM and it should be the same as D2 *
+0000004A                           173  
+0000004A                           174      ;move.l (a2),d0             ; I guess it should be BYTE
+0000004A  1012                     175      move.b (a2),d0              ; Yes, i think it is an endian problem
+0000004C                           176      ;move.l UserRAM+102,d1      ; Ops...
+0000004C                           177      ;move.l (UserRAM+102),d1    ; Ops again...
+0000004C  41F8 0084                178      lea UserRAM+102,a0          ; Now A2 is the same as A0 in the address
+00000050                           179                                  ; register
+00000050  1210                     180      move.b (a0),d1              ; This was LONG before, now it is BYTE
+00000052                           181  
+00000052                           182  ; ###############################################################
+00000052                           183  
+00000052                           184  ; ###############################################################
+00000052                           185  ; ###############################################################
+00000052                           186  ; ###############################################################
+00000052                           187  
+00000052  FFFF FFFF                188      SIMHALT             ; halt simulator
+00000056                           189  
+00000056                           190  * Put variables and constants here
+00000056                           191  
+00000056                           192      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               0
+USERRAM             1E
