@@ -1,8 +1,8 @@
 *-----------------------------------------------------------
 * Title      : ChibiAkumas Lesson 2
 * Written by : ySPHAx
-* Date       : 
-* Description:
+* Date       : 16/07/2021 d/m/y
+* Description: Lot of ways to mess up with memories.
 *-----------------------------------------------------------
     ;ORG    $1000
     
